@@ -23,6 +23,15 @@ class Floor{
         this.ElevatorDown = ElevatorDown;
     }
 
+    public int curFloor(){return curFloor;}
+    public Deque<Passenger> PassengerUp(){return PassengerUp;}
+    public Deque<Passenger> PassengerDown(){return PassengerDown;}
+
+
+
+
+
+
     //generate passenger in this floor
     public void generatePassenger(Floor Floor, int floorNum, double passengers, int tick){
         Random r = new Random();
@@ -66,15 +75,13 @@ class Floor{
         }
     }
 
-    public void floorTick(int floorNum, int tick, double passengers, List<Floor> ListFloor, List<Elevator> ListElevator){
-        for(Floor f : ListFloor){
-            generatePassenger(f, floorNum, passengers, tick);
-        }
+    
+    public void floorTick(int floorNum, int tick, double passengers, Floor f, List<Elevator> ListElevator){
+        generatePassenger(f, floorNum, passengers, tick);
+        
 
         for(Elevator e : ListElevator){
             storeElevatorInThisFloor(e);
         }
     }
-
-    
 }

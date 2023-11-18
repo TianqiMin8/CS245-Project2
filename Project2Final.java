@@ -43,13 +43,16 @@ public class Project2Final {
         //create a list of floors, elevators
         List<Floor> ListFloor;
         List<Elevator> ListElevator;
+        List<Integer> allTime;
         if(structures.equals("array")){      
             ListFloor= new ArrayList<>();
             ListElevator = new ArrayList<>();
+            allTime = new ArrayList<>();
         }
         else{      
             ListFloor= new LinkedList<>();
             ListElevator = new LinkedList<>();
+            allTime = new LinkedList<>();
         }
 
         //store all floor object to a list
@@ -88,9 +91,52 @@ public class Project2Final {
             ListElevator.add(tempElevator);
         }
 
+        //initialize time storer
+        //firstElement is the minTime, second is the maxTime, 
+        //third is the sumTime, forth is the passenger number
+        allTime.add(Integer.MAX_VALUE);
+        allTime.add(0);
+        allTime.add(0);
+        allTime.add(0);
         
 
+        //simulate in the duration time, what the floors and elevators would do
+        Project2Final project2 = new Project2Final();
+        for(int t=0; t<duration; t++){
+            allTime = project2.oneTick(allTime, ListFloor, ListElevator, structures, floors, t, passengers);
+        }
+
+
+        //Requirement 3
+        if(allTime.get(3) == 0){allTime.set(3,1);}
+        System.out.println("Average length of time: "+allTime.get(2)/allTime.get(3));
+        System.out.println("Longest time: "+allTime.get(1));
+        System.out.println("Shortest time: "+allTime.get(0));
     }
+
+    //use oneTick to find what
+    public List<Integer> oneTick(List<Integer> allTime, List<Floor> floors, 
+    List<Elevator> elevators, String structures, int floorNum, int tick, 
+    double passengers){
+        for(Floor f : floors){
+            f.floorTick(floorNum, tick, passengers, f, elevators);
+        }
+
+        for(Elevator e : elevators){
+            List<Integer> tempTime = e.elevatorTick(e, structures, tick, floors);
+
+            //refresh the allTime in every loop
+            //firstElement is the minTime, second is the maxTime, 
+            //third is the sumTime, forth is the passenger number
+            allTime.set(0,Math.min(tempTime.get(0), allTime.get(0)));
+            allTime.set(1,Math.max(tempTime.get(1), allTime.get(1)));
+            allTime.set(2,tempTime.get(2)+allTime.get(2));
+            allTime.set(3, tempTime.get(3)+allTime.get(3));
+        }
+        
+        return allTime;
+    }
+
 }
 
 // class Floor{

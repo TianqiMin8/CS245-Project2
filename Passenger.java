@@ -23,15 +23,6 @@ class Passenger implements Comparable<Passenger>{
     public int endTick(){
         return endTick;
     }
-    
-    public int timePassenger(passenger p){
-        if(p.endTick > p.startTick){
-            return p.endTick - p.startTick;
-        }
-        //if passenger is still not reach the position, send an invalid time
-        else{return -1;}        
-    }
-
     public int compareTo(Passenger otherPassenger) {
         return Integer.compare(this.endFloor, otherPassenger.endFloor);
     }
