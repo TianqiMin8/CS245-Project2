@@ -29,9 +29,6 @@ class Floor{
 
 
 
-
-
-
     //generate passenger in this floor
     public void generatePassenger(Floor Floor, int floorNum, double passengers, int tick){
         Random r = new Random();
@@ -41,7 +38,9 @@ class Floor{
             int floorToGo = r.nextInt(floorNum);
             while(Floor.curFloor == floorToGo){floorToGo = r.nextInt(floorNum);}
             Passenger p = new Passenger(Floor.curFloor,floorToGo, tick, 0);
-            
+
+            //testing
+            //System.out.println(tick +" "+Floor.curFloor());
             //store the new generated passenger either in a up queue or in a down queue
             if((floorToGo - curFloor)>0){PassengerUp.add(p);}
             else{PassengerDown.add(p);}
@@ -66,7 +65,7 @@ class Floor{
     
     } 
 
-     //check which floor this elevator is in, store that elevator to this floor's queue
+    //check which floor this elevator is in, store that elevator to this floor's queue
     public void storeElevatorInThisFloor(Elevator e){
         int elevatorCurFloor = e.elevatorCurFloor();
         //check every elevator, check their floor, store the elevator to the floor's queue  
@@ -76,12 +75,12 @@ class Floor{
     }
 
     
+
     public void floorTick(int floorNum, int tick, double passengers, Floor f, List<Elevator> ListElevator){
         generatePassenger(f, floorNum, passengers, tick);
-        
-
         for(Elevator e : ListElevator){
             storeElevatorInThisFloor(e);
         }
+        floorUpload(f);
     }
 }

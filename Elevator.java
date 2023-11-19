@@ -19,14 +19,12 @@ class Elevator{
     //load and unload only elevator 
     //in the floor down
 
-    //need the new function to find the target floor when the elevator is empty
     public Elevator(boolean up, int elevatorIndex, int elevatorCurFloor, 
     PriorityQueue<Passenger> PassengerElevatorUp, PriorityQueue<Passenger> PassengerElevatorDown,
     PriorityQueue<Integer> targetFloorsUp, PriorityQueue<Integer> targetFloorsDown){
         this.up = up;
         this.elevatorIndex = elevatorIndex;   
         this.elevatorCurFloor = elevatorCurFloor;    
-        //this.elevatorPassenger = elevatorPassenger; 
         this.PassengerElevatorUp = PassengerElevatorUp;
         this.PassengerElevatorDown = PassengerElevatorDown;
         this.targetFloorsUp = targetFloorsUp;
@@ -42,7 +40,7 @@ class Elevator{
 
 
     
-    //off load passenger on the elevaotr first, return it's time
+    //off load passenger on the elevator first, return it's time
     public List<Integer> offLoad(Elevator e, int tick, String structures){
         List<Integer> leavingPassengers;
         if(structures.equals("array")){leavingPassengers = new ArrayList<Integer>();}
@@ -55,10 +53,11 @@ class Elevator{
         int offloadPassengerNum = 0;
         if(!PassengerElevatorUp.isEmpty()){
             if(up){
-                while(elevatorCurFloor == PassengerElevatorUp.peek().endFloor()){
+                if(elevatorCurFloor == PassengerElevatorUp.peek().endFloor()){
                     //record and change these passengers' leave tick 
-                    
                     int tempDuration = tick - PassengerElevatorUp.peek().startTick();
+                    PassengerElevatorUp.poll();
+            
                     minTime = Math.min(minTime, tempDuration);
                     maxTime = Math.max(maxTime, tempDuration);
                     sumTime += tempDuration;
@@ -67,9 +66,10 @@ class Elevator{
                 
             }
             else{
-                while(elevatorCurFloor == PassengerElevatorDown.peek().endFloor()){
+                if(elevatorCurFloor == PassengerElevatorDown.peek().endFloor()){
                     //record these passengers' leave tick
                     int tempDuration = tick - PassengerElevatorDown.peek().startTick();
+                    PassengerElevatorDown.poll();
                     minTime = Math.min(minTime, tempDuration);
                     maxTime = Math.max(maxTime, tempDuration);
                     sumTime += tempDuration;
@@ -83,10 +83,11 @@ class Elevator{
         leavingPassengers.add(maxTime);
         leavingPassengers.add(sumTime);
         leavingPassengers.add(offloadPassengerNum);
+        //System.out.println(minTime+" "+ maxTime + " "+tick);
         return leavingPassengers;
     }
 
-    //upload passengers to the elevator
+    //upload passengers to the elevator, use that function to Floor
     public void elevatorUpload(Elevator e, Passenger p){
         if(e.up){e.PassengerElevatorUp.add(p);}
         else{e.PassengerElevatorDown.add(p);}
@@ -96,6 +97,7 @@ class Elevator{
     //after uploading all passengers in this floor to this elevator
     public void move(Elevator e, List<Floor> ListFloor){
         int targetFloor = e.elevatorCurFloor();
+
         //if there are passenger in the elevator
         if(!e.PassengerElevatorUp.isEmpty() || !e.PassengerElevatorDown.isEmpty()){
             //check if it's larger than 5 floors' travel
@@ -112,6 +114,7 @@ class Elevator{
             ////////////////////////////////////////////////////later to consider how to flag this passenger or queue in this floor
             //check all floors, from 0 to maxFloor
             for(Floor f : ListFloor){
+                //System.out.println(f.curFloor());
                 if(targetFloor != e.elevatorCurFloor() && f.curFloor()== e.elevatorCurFloor()){
                     break;
                 }
@@ -141,7 +144,7 @@ class Elevator{
         result = offLoad(e, tick, structures);
         
         //should be changed?
-        //elevatorUpload(e, e.elevatorCurFloor());
+        //e.elevatorUpload(e, e.elevatorCurFloor());
 
         //move elevator to its target floor
         move(e, ListFloor);

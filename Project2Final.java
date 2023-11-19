@@ -120,6 +120,7 @@ public class Project2Final {
     double passengers){
         for(Floor f : floors){
             f.floorTick(floorNum, tick, passengers, f, elevators);
+    
         }
 
         for(Elevator e : elevators){
@@ -134,6 +135,7 @@ public class Project2Final {
             allTime.set(3, tempTime.get(3)+allTime.get(3));
         }
         
+
         return allTime;
     }
 
