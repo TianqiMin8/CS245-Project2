@@ -38,6 +38,14 @@ class Elevator{
         return elevatorCurFloor;
     }
 
+    public PriorityQueue<Passenger> PassengerElevatorUp(){
+        return PassengerElevatorUp;
+    }
+
+    public PriorityQueue<Passenger> PassengerElevatorDown(){
+        return PassengerElevatorDown;
+    }
+
 
     
     //off load passenger on the elevator first, return it's time
@@ -56,8 +64,10 @@ class Elevator{
                 if(elevatorCurFloor == PassengerElevatorUp.peek().endFloor()){
                     //record and change these passengers' leave tick 
                     int tempDuration = tick - PassengerElevatorUp.peek().startTick();
+                    // Passenger t = PassengerElevatorUp.peek();
+                    // System.out.println("passenger floor: "+ t.startFloor() +"-"
+                    // + t.endFloor() + " "+ tempDuration);
                     PassengerElevatorUp.poll();
-            
                     minTime = Math.min(minTime, tempDuration);
                     maxTime = Math.max(maxTime, tempDuration);
                     sumTime += tempDuration;
@@ -114,7 +124,6 @@ class Elevator{
             ////////////////////////////////////////////////////later to consider how to flag this passenger or queue in this floor
             //check all floors, from 0 to maxFloor
             for(Floor f : ListFloor){
-                //System.out.println(f.curFloor());
                 if(targetFloor != e.elevatorCurFloor() && f.curFloor()== e.elevatorCurFloor()){
                     break;
                 }

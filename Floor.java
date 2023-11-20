@@ -34,35 +34,46 @@ class Floor{
         Random r = new Random();
         //generate passenger in this floor
         double a = Math.random();  
+
+
         if(a <= passengers){
             int floorToGo = r.nextInt(floorNum);
             while(Floor.curFloor == floorToGo){floorToGo = r.nextInt(floorNum);}
             Passenger p = new Passenger(Floor.curFloor,floorToGo, tick, 0);
-
+            //testing
+            //System.out.println("start: " +Floor.curFloor+", end: "+floorToGo);
             //testing
             //System.out.println(tick +" "+Floor.curFloor());
             //store the new generated passenger either in a up queue or in a down queue
-            if((floorToGo - curFloor)>0){PassengerUp.add(p);}
-            else{PassengerDown.add(p);}
+            if((floorToGo - curFloor)>0){Floor.PassengerUp.add(p);}
+            else{Floor.PassengerDown.add(p);}
         }
     }
 
     //check passenger can get on the elevator. if, use elevator upload
-    public void floorUpload(Floor f){
+    public void floorUpload(Floor f, int elevatorCapacity){
         //check if FloorupQueue is not empty, check every elevator on this floor
         if(!f.PassengerUp.isEmpty()){
             if(!f.ElevatorUp.isEmpty()){
-                (f.ElevatorUp.peek()).elevatorUpload(f.ElevatorUp.peek(), f.PassengerUp.pop());
+                //add a judge to make sure the elevator is not overloded
+                int passengerInElev = ((f.ElevatorUp).peek().PassengerElevatorUp()).size();
+                while(passengerInElev<elevatorCapacity && !f.PassengerUp.isEmpty()){
+                    (f.ElevatorUp.peek()).elevatorUpload(f.ElevatorUp.peek(), f.PassengerUp.pop());
+                    passengerInElev ++;
+                }
             }
         }
         //check if FloordownQueue is not empty, check every elevator on this floor
         if(!f.PassengerDown.isEmpty()){
             if(!f.ElevatorDown.isEmpty()){
-                //need to add a judge to make sure the elevator is not overloded
-                (f.ElevatorDown.peek()).elevatorUpload(f.ElevatorDown.peek(), f.PassengerDown.pop());
+                //add a judge to make sure the elevator is not overloded
+                int passengerInElev = ((f.ElevatorDown).peek().PassengerElevatorDown()).size();
+                while(passengerInElev<elevatorCapacity && !f.PassengerDown.isEmpty()){
+                    (f.ElevatorDown.peek()).elevatorUpload(f.ElevatorDown.peek(), f.PassengerDown.pop());
+                    passengerInElev ++;
+                }
             }
         }
-    
     } 
 
     //check which floor this elevator is in, store that elevator to this floor's queue
@@ -75,12 +86,11 @@ class Floor{
     }
 
     
-
-    public void floorTick(int floorNum, int tick, double passengers, Floor f, List<Elevator> ListElevator){
+    public void floorTick(int floorNum, int tick, double passengers, Floor f, List<Elevator> ListElevator, int elevatorCapacity){
         generatePassenger(f, floorNum, passengers, tick);
         for(Elevator e : ListElevator){
             storeElevatorInThisFloor(e);
         }
-        floorUpload(f);
+        floorUpload(f, elevatorCapacity);
     }
 }

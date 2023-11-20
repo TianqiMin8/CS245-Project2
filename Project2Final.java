@@ -98,12 +98,14 @@ public class Project2Final {
         allTime.add(0);
         allTime.add(0);
         allTime.add(0);
-        
+        //System.out.println("floors: "+floors);
 
         //simulate in the duration time, what the floors and elevators would do
         Project2Final project2 = new Project2Final();
         for(int t=0; t<duration; t++){
-            allTime = project2.oneTick(allTime, ListFloor, ListElevator, structures, floors, t, passengers);
+            //////////////////////////////////////////////////////testing
+            //System.out.println("tick: "+t);
+            allTime = project2.oneTick(allTime, ListFloor, ListElevator, structures, floors, t, passengers, elevatorCapacity);
         }
 
 
@@ -117,12 +119,10 @@ public class Project2Final {
     //use oneTick to find what
     public List<Integer> oneTick(List<Integer> allTime, List<Floor> floors, 
     List<Elevator> elevators, String structures, int floorNum, int tick, 
-    double passengers){
+    double passengers, int elevatorCapacity){
         for(Floor f : floors){
-            f.floorTick(floorNum, tick, passengers, f, elevators);
-    
+            f.floorTick(floorNum, tick, passengers, f, elevators, elevatorCapacity);    
         }
-
         for(Elevator e : elevators){
             List<Integer> tempTime = e.elevatorTick(e, structures, tick, floors);
 
@@ -134,148 +134,7 @@ public class Project2Final {
             allTime.set(2,tempTime.get(2)+allTime.get(2));
             allTime.set(3, tempTime.get(3)+allTime.get(3));
         }
-        
-
         return allTime;
     }
 
 }
-
-// class Floor{
-//     //store the current floor
-//     private int curFloor;
-//     //store the generated passenger on this floor
-//     private Deque<Passenger> PassengerUp;
-//     private Deque<Passenger> PassengerDown;
-//     //necessary?
-//     private Deque<Elevator> ElevatorUp;
-//     private Deque<Elevator> ElevatorDown;
-
-//     public Floor(Deque<Passenger> PassengerUp, Deque<Passenger> PassengerDown, 
-//     int curFloor, Deque<Elevator> ElevatorUp, Deque<Elevator> ElevatorDown){
-//         this.curFloor = curFloor;
-//         this.PassengerUp = PassengerUp;
-//         this.PassengerDown = PassengerDown;
-//         this.ElevatorUp = ElevatorUp;
-//         this.ElevatorDown = ElevatorDown;
-//     }
-
-//     //generate passenger in this floor
-//     public void generatePassenger(Floor Floor, int floorNum, double passengers, int tick){
-//         Random r = new Random();
-//         //generate passenger in this floor
-//         double a = Math.random();  
-//         if(a <= passengers){
-//             int floorToGo = r.nextInt(floorNum);
-//             while(Floor.curFloor == floorToGo){floorToGo = r.nextInt(floorNum);}
-//             Passenger p = new Passenger(Floor.curFloor,floorToGo, tick, 0);
-            
-//             //store the new generated passenger either in a up queue or in a down queue
-//             if((floorToGo - curFloor)>0){PassengerUp.add(p);}
-//             else{PassengerDown.add(p);}
-//         }
-//     }
-
-//     //check passenger can get on the elevator. if, use elevator upload
-//     public void floorUpload(Floor f){
-//         //check if FloorupQueue is not empty, check every elevator on this floor
-//         if(!f.PassengerUp.isEmpty()){
-//             if(!f.ElevatorUp.isEmpty()){
-//                 (f.ElevatorUp.peek()).elevatorUpload(f.ElevatorUp.peek(), f.PassengerUp.pop());
-//             }
-//         }
-//         //check if FloordownQueue is not empty, check every elevator on this floor
-//         if(!f.PassengerDown.isEmpty()){
-//             if(!f.ElevatorDown.isEmpty()){
-//                 //need to add a judge to make sure the elevator is not overloded
-//                 (f.ElevatorDown.peek()).elevatorUpload(f.ElevatorDown.peek(), f.PassengerDown.pop());
-//             }
-//         }
-    
-//     } 
-
-//     public void floorTick(){
-
-//     }
-
-    
-// }
-
-// class Elevator{
-//     private boolean up;
-//     private int elevatorIndex;
-//     private int elevatorCurFloor;
-//     private PriorityQueue<Passenger> PassengerElevatorUp = new PriorityQueue<>(); //minHeap
-    
-//     private PriorityQueue<Passenger> PassengerElevatorDown = new PriorityQueue<>(Collections.reverseOrder()); //maxHeap
-    
-//     //store the target floors
-//     private PriorityQueue<Integer> targetFloorsUp = new PriorityQueue<>();
-//     private PriorityQueue<Integer> targetFloorsDown = new PriorityQueue<>(Collections.reverseOrder());
-
-//     public Elevator(boolean up, int elevatorIndex, int elevatorCurFloor, 
-//     PriorityQueue<Passenger> PassengerElevatorUp, PriorityQueue<Passenger> PassengerElevatorDown,
-//     PriorityQueue<Integer> targetFloorsUp, PriorityQueue<Integer> targetFloorsDown){
-//         this.up = up;
-//         this.elevatorIndex = elevatorIndex;   
-//         this.elevatorCurFloor = elevatorCurFloor;    
-//         //this.elevatorPassenger = elevatorPassenger; 
-//         this.PassengerElevatorUp = PassengerElevatorUp;
-//         this.PassengerElevatorDown = PassengerElevatorDown;
-//         this.targetFloorsUp = targetFloorsUp;
-//         this.targetFloorsDown = targetFloorsDown;
-//     }
-
-//     //off load passenger on the elevaotr first
-//     public Deque offLoad(elevator e, int tick, String structures){
-//         Deque leavingPassengers;
-//         if(structures.equals("array")){leavingPassengers = new ArrayDeque<Passenger>();}
-//         else{leavingPassengers = new ConcurrentLinkedDeque();}
-
-//         if(up){
-//             while(elevatorCurFloor == PassengerElevatorUp.peek().endFloor){
-//                 //PassengerElevatorUp.poll();
-//                 //record these passengers' leave tick 
-//                 PassengerElevatorUp.peek().endTick = tick;
-//                 leavingPassengers.add(PassengerElevatorUp.poll());
-//             }
-            
-//         }
-//         else{
-//             while(elevatorCurFloor == PassengerElevatorDown.peek().endFloor){
-//                 //record these passengers' leave tick
-//                 PassengerElevatorDown.peek().endTick = tick;
-//                 leavingPassengers.add(PassengerElevatorUp.poll());
-//             }
-//         }
-//         return leavingPassengers;
-//     }
-
-//     //upload passengers on the elevator
-//     public void elevatorUpload(Elevator e, Passenger p){
-//         if(e.up){e.PassengerElevatorUp.add(p);}
-//         else{e.PassengerElevatorDown.add(p);}
-//     }
-
-
-
-// }
-
-
-// class Passenger{
-//     private int startFloor;
-//     private int endFloor; 
-//     private int startTick;
-//     private int endTick;
-
-//     public Passenger(int startFloor, int endFloor, int startTick, int endTick){
-//         this.startFloor = startFloor;
-//         this.endFloor = endFloor;
-//         this.startTick = startTick;
-//         this.endTick = endTick;
-//     }
-
-//     public int endTick(){
-//         return endTick;
-//     }
-// }
