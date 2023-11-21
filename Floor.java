@@ -1,8 +1,4 @@
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.io.*;
-import java.util.List;
-import java.util.LinkedList;
 
 class Floor{
     //store the current floor
@@ -10,17 +6,13 @@ class Floor{
     //store the generated passenger on this floor
     private Deque<Passenger> PassengerUp;
     private Deque<Passenger> PassengerDown;
-    //necessary?
-    private Deque<Elevator> ElevatorUp;
-    private Deque<Elevator> ElevatorDown;
 
     public Floor(Deque<Passenger> PassengerUp, Deque<Passenger> PassengerDown, 
-    int curFloor, Deque<Elevator> ElevatorUp, Deque<Elevator> ElevatorDown){
+    int curFloor){
         this.curFloor = curFloor;
         this.PassengerUp = PassengerUp;
         this.PassengerDown = PassengerDown;
-        this.ElevatorUp = ElevatorUp;
-        this.ElevatorDown = ElevatorDown;
+
     }
 
     public int curFloor(){return curFloor;}
@@ -44,23 +36,5 @@ class Floor{
             if((floorToGo - curFloor)>0){Floor.PassengerUp.add(p);}
             else{Floor.PassengerDown.add(p);}
         }
-    }
-
-    //check which floor this elevator is in, store that elevator to this floor's queue
-    public void storeElevatorInThisFloor(Elevator e){
-        int elevatorCurFloor = e.elevatorCurFloor();
-        //check every elevator, check their floor, store the elevator to the floor's queue  
-        if(elevatorCurFloor == curFloor){
-            ElevatorDown.add(e);
-        }
-    }
-
-    
-    public void floorTick(int floorNum, int tick, double passengers, Floor f, List<Elevator> ListElevator, int elevatorCapacity){
-        generatePassenger(f, floorNum, passengers, tick);
-        for(Elevator e : ListElevator){
-            storeElevatorInThisFloor(e);
-        }
-        //floorUpload(f, elevatorCapacity);
     }
 }

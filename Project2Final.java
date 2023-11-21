@@ -54,14 +54,9 @@ public class Project2Final {
             //store an empty queue in that floor
             Deque<Passenger> PassengerUp;
             Deque<Passenger> PassengerDown;
-            Deque<Elevator> ElevatorUp;
-            Deque<Elevator> ElevatorDown;
             PassengerUp = ds.creatPassengereQueue(structures);
             PassengerDown = ds.creatPassengereQueue(structures);
-            ElevatorUp = ds.creatElevatorQueue(structures);
-            ElevatorDown = ds.creatElevatorQueue(structures);
-
-            Floor tempFloor = new Floor(PassengerUp, PassengerDown, i, ElevatorUp, ElevatorDown);
+            Floor tempFloor = new Floor(PassengerUp, PassengerDown, i);
             ListFloor.add(tempFloor);
         }
 
@@ -84,19 +79,18 @@ public class Project2Final {
         allTime.add(0);
         allTime.add(0);
         allTime.add(0);
-        //System.out.println("floors: "+floors);
 
         //simulate in the duration time, what the floors and elevators would do
         Project2Final project2 = new Project2Final();
         for(int t=0; t<duration; t++){
-            //////////////////////////////////////////////////////testing
-            //System.out.println("tick: "+t);
             allTime = project2.oneTick(allTime, ListFloor, ListElevator, structures, floors, t, passengers, elevatorCapacity);
         }
 
 
         //Requirement 3
+        
         if(allTime.get(3) == 0){allTime.set(3,1);}
+        if(allTime.get(0) == Integer.MAX_VALUE){allTime.set(0,0);}
         System.out.println("Average length of time: "+allTime.get(2)/allTime.get(3));
         System.out.println("Longest time: "+allTime.get(1));
         System.out.println("Shortest time: "+allTime.get(0));
@@ -108,10 +102,6 @@ public class Project2Final {
     double passengers, int elevatorCapacity){
         for(Floor f : floors){   
             f.generatePassenger(f, floorNum, passengers, tick);
-            for(Elevator e : elevators){
-                f.storeElevatorInThisFloor(e);
-            }            
-            f.floorTick(floorNum, tick, passengers, f, elevators, elevatorCapacity);    
         }
         for(Elevator e : elevators){
             List<Integer> tempTime = e.elevatorTick(e, structures, tick, floors, elevatorCapacity);
