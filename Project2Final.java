@@ -44,37 +44,23 @@ public class Project2Final {
         List<Floor> ListFloor;
         List<Elevator> ListElevator;
         List<Integer> allTime;
-        if(structures.equals("array")){      
-            ListFloor= new ArrayList<>();
-            ListElevator = new ArrayList<>();
-            allTime = new ArrayList<>();
-        }
-        else{      
-            ListFloor= new LinkedList<>();
-            ListElevator = new LinkedList<>();
-            allTime = new LinkedList<>();
-        }
-
+        DecideStructures ds = new DecideStructures();
+        ListFloor = ds.createFloorList(structures);
+        ListElevator = ds.createElevatorList(structures);
+        allTime = ds.createIntegerList(structures);
+        
         //store all floor object to a list
-        //i is the current Floor
+        //i is the current Floor, start from 0
         for(int i=0; i<floors; i++){
             //store an empty queue in that floor
             Deque<Passenger> PassengerUp;
             Deque<Passenger> PassengerDown;
             Deque<Elevator> ElevatorUp;
             Deque<Elevator> ElevatorDown;
-            if(structures.equals("array")){
-                PassengerUp = new ArrayDeque<Passenger>();
-                PassengerDown = new ArrayDeque<Passenger>();
-                ElevatorUp = new ArrayDeque<Elevator>();
-                ElevatorDown = new ArrayDeque<Elevator>();
-            }
-            else{
-                PassengerUp = new ConcurrentLinkedDeque<Passenger>();
-                PassengerDown = new ConcurrentLinkedDeque<Passenger>();
-                ElevatorUp = new ConcurrentLinkedDeque<Elevator>();
-                ElevatorDown = new ConcurrentLinkedDeque<Elevator>();
-            }
+            PassengerUp = ds.creatPassengereQueue(structures);
+            PassengerDown = ds.creatPassengereQueue(structures);
+            ElevatorUp = ds.creatElevatorQueue(structures);
+            ElevatorDown = ds.creatElevatorQueue(structures);
 
             Floor tempFloor = new Floor(PassengerUp, PassengerDown, i, ElevatorUp, ElevatorDown);
             ListFloor.add(tempFloor);
@@ -86,6 +72,7 @@ public class Project2Final {
             PriorityQueue<Passenger> PassengerElevatorDown= new PriorityQueue<>(Collections.reverseOrder());
             PriorityQueue<Integer> targetFloorsUp= new PriorityQueue<>();
             PriorityQueue<Integer> targetFloorsDown= new PriorityQueue<>(Collections.reverseOrder());
+            //initialize all elevators started from 0 floor, going up
             Elevator tempElevator = new Elevator(true, i, 0, 
             PassengerElevatorUp, PassengerElevatorDown, targetFloorsUp, targetFloorsDown);
             ListElevator.add(tempElevator);
