@@ -40,41 +40,11 @@ class Floor{
             int floorToGo = r.nextInt(floorNum);
             while(Floor.curFloor == floorToGo){floorToGo = r.nextInt(floorNum);}
             Passenger p = new Passenger(Floor.curFloor,floorToGo, tick, 0);
-            //testing
-            //System.out.println("start: " +Floor.curFloor+", end: "+floorToGo);
-            //testing
-            //System.out.println(tick +" "+Floor.curFloor());
             //store the new generated passenger either in a up queue or in a down queue
             if((floorToGo - curFloor)>0){Floor.PassengerUp.add(p);}
             else{Floor.PassengerDown.add(p);}
         }
     }
-
-    //check passenger can get on the elevator. if, use elevator upload
-    public void floorUpload(Floor f, int elevatorCapacity){
-        //check if FloorupQueue is not empty, check every elevator on this floor
-        if(!f.PassengerUp.isEmpty()){
-            if(!f.ElevatorUp.isEmpty()){
-                //add a judge to make sure the elevator is not overloded
-                int passengerInElev = ((f.ElevatorUp).peek().PassengerElevatorUp()).size();
-                while(passengerInElev<elevatorCapacity && !f.PassengerUp.isEmpty()){
-                    (f.ElevatorUp.peek()).elevatorUpload(f.ElevatorUp.peek(), f.PassengerUp.pop());
-                    passengerInElev ++;
-                }
-            }
-        }
-        //check if FloordownQueue is not empty, check every elevator on this floor
-        if(!f.PassengerDown.isEmpty()){
-            if(!f.ElevatorDown.isEmpty()){
-                //add a judge to make sure the elevator is not overloded
-                int passengerInElev = ((f.ElevatorDown).peek().PassengerElevatorDown()).size();
-                while(passengerInElev<elevatorCapacity && !f.PassengerDown.isEmpty()){
-                    (f.ElevatorDown.peek()).elevatorUpload(f.ElevatorDown.peek(), f.PassengerDown.pop());
-                    passengerInElev ++;
-                }
-            }
-        }
-    } 
 
     //check which floor this elevator is in, store that elevator to this floor's queue
     public void storeElevatorInThisFloor(Elevator e){
@@ -91,6 +61,6 @@ class Floor{
         for(Elevator e : ListElevator){
             storeElevatorInThisFloor(e);
         }
-        floorUpload(f, elevatorCapacity);
+        //floorUpload(f, elevatorCapacity);
     }
 }

@@ -1,8 +1,7 @@
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.io.*;
 import java.util.List;
-import java.util.LinkedList;
+
 
 
 //simulate the elevator runninng
@@ -107,11 +106,15 @@ public class Project2Final {
     public List<Integer> oneTick(List<Integer> allTime, List<Floor> floors, 
     List<Elevator> elevators, String structures, int floorNum, int tick, 
     double passengers, int elevatorCapacity){
-        for(Floor f : floors){
+        for(Floor f : floors){   
+            f.generatePassenger(f, floorNum, passengers, tick);
+            for(Elevator e : elevators){
+                f.storeElevatorInThisFloor(e);
+            }            
             f.floorTick(floorNum, tick, passengers, f, elevators, elevatorCapacity);    
         }
         for(Elevator e : elevators){
-            List<Integer> tempTime = e.elevatorTick(e, structures, tick, floors);
+            List<Integer> tempTime = e.elevatorTick(e, structures, tick, floors, elevatorCapacity);
 
             //refresh the allTime in every loop
             //firstElement is the minTime, second is the maxTime, 
